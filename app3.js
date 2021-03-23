@@ -8,17 +8,17 @@ var isValidFullName = fullname => fullname && (fullname.length >= 5);
 // Segundo validar ese nombre
 // Tercero si es invalido, aplicamos una regla de css al input
 // Si es valido , no se aplica la regla
-var validateFullname = () => {
-    var fullNameField = document.getElementById("fullName");
-    var valid = isValidFullName(fullNameField.value);
+// var validateFullname = () => {
+//     var fullNameField = document.getElementById("fullName");
+//     var valid = isValidFullName(fullNameField.value);
 
-    if (valid) {
-        fullNameField.classList.remove("error"); //Propiedad: la lista de clases que tienen su atributo class
-    } else {
-        fullNameField.classList.add("error");
-    }
-    return valid;
-}
+//     if (valid) {
+//         fullNameField.classList.remove("error"); //Propiedad: la lista de clases que tienen su atributo class
+//     } else {
+//         fullNameField.classList.add("error");
+//     }
+//     return valid;
+// }
 
 //Validar fecha de nacimiento
 // - Year. mayor 1850.menor o = año actual
@@ -42,46 +42,46 @@ var splitDateInParts = date => {
 }
 
 var isValidDate = date => {
-    if (date.length < 8 || date.length > 10) return false;
-    var parts = splitDateInParts(date);
-    var validYear = isValidYear(parts[2]);
-    var validMonth = isValidMonth(parts[1]);
-    var validDay = isValidDay(parts[0], parts[1], parts[2]);
-    return validYear && validMonth && validDay;
-}
-var validateBirthdate = () => {
-        var birthdayField = document.getElementById("birthday");
-        var valid = isValidDate(birthdayField.value);
-
-        if (valid) {
-            birthdayField.classList.remove("error"); //Propiedad: la lista de clases que tienen su atributo class
-        } else {
-            birthdayField.classList.add("error");
-        }
-        return valid;
+        if (date.length < 8 || date.length > 10) return false;
+        var parts = splitDateInParts(date);
+        var validYear = isValidYear(parts[2]);
+        var validMonth = isValidMonth(parts[1]);
+        var validDay = isValidDay(parts[0], parts[1], parts[2]);
+        return validYear && validMonth && validDay;
     }
-    //Validar DNI
+    // var validateBirthdate = () => {
+    //         var birthdayField = document.getElementById("birthday");
+    //         var valid = isValidDate(birthdayField.value);
+
+//         if (valid) {
+//             birthdayField.classList.remove("error"); //Propiedad: la lista de clases que tienen su atributo class
+//         } else {
+//             birthdayField.classList.add("error");
+//         }
+//         return valid;
+//     }
+//Validar DNI
 var DNI_LETTERS = "TRWAGMYFPDXBNJZSQVHLCKET";
 var isValidDNILetter = (dniLetter, dniNumber) => DNI_LETTERS[dniNumber % 23] === dniLetter;
 var isValidDNINumber = number => number >= 0 && number <= 99999999;
 
 var isValidDNI = dni => {
-    if (dni.length !== 9) return false;
-    var dniNumber = dni.slice(0, 8);
-    var dniLetter = dni.slice(8, 9);
-    return isValidDNINumber(dniNumber) && isValidDNILetter(dniLetter, dniNumber);
-}
-var validateDni = () => {
-    var dniField = document.getElementById("dni");
-    var valid = isValidDNI(dniField.value);
-
-    if (valid) {
-        dniField.classList.remove("error"); //Propiedad: la lista de clases que tienen su atributo class
-    } else {
-        dniField.classList.add("error");
+        if (dni.length !== 9) return false;
+        var dniNumber = dni.slice(0, 8);
+        var dniLetter = dni.slice(8, 9);
+        return isValidDNINumber(dniNumber) && isValidDNILetter(dniLetter, dniNumber);
     }
-    return valid;
-}
+    // var validateDni = () => {
+    //     var dniField = document.getElementById("dni");
+    //     var valid = isValidDNI(dniField.value);
+
+//     if (valid) {
+//         dniField.classList.remove("error"); //Propiedad: la lista de clases que tienen su atributo class
+//     } else {
+//         dniField.classList.add("error");
+//     }
+//     return valid;
+// }
 
 //Validar telefono
 var isValidMobile = mobile => {
@@ -90,29 +90,60 @@ var isValidMobile = mobile => {
     );
 }
 
-var validateMobile = () => {
-    var mobileField = document.getElementById("mobile");
-    var valid = isValidMobile(mobileField.value);
+// var validateMobile = () => {
+//     var mobileField = document.getElementById("mobile");
+//     var valid = isValidMobile(mobileField.value);
+
+//     if (valid) {
+//         mobileField.classList.remove("error"); //Propiedad: la lista de clases que tienen su atributo class
+//     } else {
+//         mobileField.classList.add("error");
+//     }
+//     return valid;
+// }
+
+// function general input
+var validateInput = (id, validationFunction) => {
+    var field = document.getElementById(id);
+    var valid = validationFunction(field.value);
 
     if (valid) {
-        mobileField.classList.remove("error"); //Propiedad: la lista de clases que tienen su atributo class
+        field.classList.remove("error"); //Propiedad: la lista de clases que tienen su atributo class
     } else {
-        mobileField.classList.add("error");
+        field.classList.add("error");
     }
     return valid;
 }
 
+//Iterar en un objeto para cuando hay mucho input(Registro)
+var inputs = {
+    fullName: () => validateInput("fullName", isValidFullName), //ValidateFullname
+    birthday: () => validateInput("birthday", isValidDate), //ValidateBirthdate
+    dni: () => validateInput("dni", isValidDNI),
+    mobile: () => validateInput("mobile", isValidMobile),
+}
 
 //General Algorithm
 
 var validateForm = (event) => {
     event.preventDefault(); // Cancela la tarea predefinida del submit
+    //otra forma
+    for (var id in inputs) {
+        inputs[id]();
+    }
 
-    validateFullname(); //ValidateFullname
-    validateBirthdate() //ValidateBirthdate
-    validateDni(); //ValidateDni
-    validateMobile(); //ValidateMobile
+    // validateInput("fullName", isValidFullName); //ValidateFullname
+    // validateInput("birthday", isValidDate) //ValidateBirthdate
+    // validateInput("dni", isValidDNI);
+    // validateInput("mobile", isValidMobile);
 };
 
 //Events
 document.getElementById("register").addEventListener("submit", validateForm);
+//otra forma de hacerlo
+// document.getElementById("fullName").addEventListener("change", () => validateInput("fullName", isValidFullName);
+
+//Otra forma
+for (var id in inputs) {
+    document.getElementById(id).addEventListener("change", inputs[id]);
+}
